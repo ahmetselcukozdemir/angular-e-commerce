@@ -13,7 +13,7 @@ namespace ECommerceServer.Persistence
     {
         public static void AddPersistenceServices(this IServiceCollection services)
         {
-            services.AddDbContext<ECommerceDBContext>(options=> options.UseNpgsql("User ID=root;Password=myPassword;Host=localhost;Port=49153;Database=ECommerceDB;"));
+            services.AddDbContext<ECommerceDBContext>(options=> options.UseNpgsql(Configuration.ConnectionString));
         }
     }
 }
