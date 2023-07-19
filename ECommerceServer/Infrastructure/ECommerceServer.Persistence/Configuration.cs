@@ -13,10 +13,26 @@ namespace ECommerceServer.Persistence
         {
             get
             {
-                IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ECommerceServer.API"))
-                  .AddJsonFile($"appsettings.json", optional: false)
-                  .Build();
-                return configuration.GetConnectionString("PostgreSQL");
+                var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                string connectionString = "";
+
+                if (string.IsNullOrEmpty(envName)) 
+                {
+                    IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ECommerceServer.API"))
+                 .AddJsonFile($"appsettings.json", optional: false)
+                 .Build();
+
+                    connectionString = configuration.GetConnectionString("PostgreSQL");
+                }
+                else
+                {
+                    IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/ECommerceServer.API"))
+                 .AddJsonFile($"appsettings.{envName}.json", optional: false)
+                 .Build();
+                    connectionString = configuration.GetConnectionString("PostgreSQL");
+                }
+
+                return connectionString;
             }
         }
     }
