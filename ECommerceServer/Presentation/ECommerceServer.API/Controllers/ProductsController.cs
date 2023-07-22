@@ -1,7 +1,9 @@
 ﻿using ECommerceServer.Application.Repositories;
 using ECommerceServer.Domain.Entities;
+using ECommerceServer.Persistence.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ECommerceServer.API.Controllers
 {
@@ -12,36 +14,37 @@ namespace ECommerceServer.API.Controllers
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
 
+        readonly private IOrderWriteRepository _orderWriteRepository;
+        readonly private IOrderReadRepository _orderReadRepository;
+        readonly private ICustomerWriteRepository _customerWriteRepository;
 
-        public ProductsController(IProductReadRepository productReadRepository,IProductWriteRepository productWriteRepository)
+
+        public ProductsController(IProductReadRepository productReadRepository,IProductWriteRepository productWriteRepository, IOrderWriteRepository orderWriteRepository, ICustomerWriteRepository customerWriteRepository, IOrderReadRepository orderReadRepository)
         {
-            _productReadRepository= productReadRepository;
-            _productWriteRepository= productWriteRepository;
+            _productReadRepository = productReadRepository;
+            _productWriteRepository = productWriteRepository;
+            _orderWriteRepository = orderWriteRepository;
+            _customerWriteRepository = customerWriteRepository;
+            _orderReadRepository = orderReadRepository;
         }
 
         [HttpGet]
         public async Task Get()
         {
-            // await _productWriteRepository.AddRangeAsync(new()
-            // {
-            //     new() { Id= Guid.NewGuid(),CreatedDate = DateTime.UtcNow,Stock = 10,Price = 100,Name="Ürün 1" },
-            //     new() { Id= Guid.NewGuid(),CreatedDate = DateTime.UtcNow,Stock = 20,Price = 200,Name="Ürün 2" },
-            //     new() { Id= Guid.NewGuid(),CreatedDate = DateTime.UtcNow,Stock = 30,Price = 300 ,Name="Ürün 3"},
-            // });
+            // var guidID  = Guid.NewGuid();
+            // await _customerWriteRepository.AddAsync(new() { Id = guidID, Name = "Ahmet" });
 
-            //var count = await _productWriteRepository.SaveAsync();
 
-           Product p = await _productReadRepository.GetByIdAsync("7e57cdfd-238c-406b-84b9-d62fd589a61f",false);
-            p.Name = "Selçuk";
-            _productWriteRepository.SaveAsync();
+            //await  _orderWriteRepository.AddAsync(new() { Description = "aaa", Address = "dgdgd",CustomerId = guidID });
+            //await _orderWriteRepository.AddAsync(new() { Description = "bbb", Address = "dagdagda",CustomerId = guidID });
+            //await _orderWriteRepository.SaveAsync();
+
+            Order data =await _orderReadRepository.GetByIdAsync("8a8fe69e-3c6d-48e2-88a4-515a8d461b39");
+            data.Address = "İstanbul";
+            await _orderWriteRepository.SaveAsync();
+            
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
-        {
-          Product product = await _productReadRepository.GetByIdAsync(id);
-          return Ok(product);
-        }
+       
 
     }
 }
